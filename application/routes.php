@@ -32,9 +32,80 @@
 |
 */
 
+// SHOW Home page
 Route::get('/', function()
 {
 	return View::make('home.index');
+});
+
+Route::post('replace', function()
+{
+	// If you had a database you could easily fetch the content from the database here...
+	$data = array(
+		"html" => '<div id="hero-content"><h1>NEW shiny content from AJAX</h1><p>This content was loaded dynamically from a route "replace" </p></div>'
+	);
+	
+	return Response::json($data);
+});
+
+Route::get('votes', function()
+{
+	// Lets say you have "vote" model, in that case you could be able to do something like 
+	// $votecount = Vote::all()->count(); and output that instead of the fixed number I have here
+	$data = array(
+		"html" => '<p class="lead">13 Votes</p>'
+	);
+	
+	return Response::json($data);
+});
+
+Route::post('vote', function()
+{
+	// Lets say you have "vote" model, in that case you could be able to do something like
+	// $vote = new Vote()
+	// $vote->user_id = Auth::user()->id; 
+	// $vote->save();
+
+	$data = array(
+		"html" => '<a href="#" class="btn disabled"><i class="icon icon-thumbs-up"></i> Voted!</a>'
+	);
+	
+	return Response::json($data);
+});
+
+Route::post('redirect', function()
+{
+	// the user will be redirected to wherever the location variable in the JSON response is set
+	$data = array(
+		"location" => 'someredirectroute'
+	);
+	
+	return Response::json($data);
+});
+
+Route::get('someredirectroute', function()
+{
+	echo('Awesome! You have been redirected! Go '.HTML::link(URL::home(), 'HOME'));
+});
+
+Route::post('submit', function()
+{
+	// When the form is submitted, we can do some DB queries and let the user know that the form was submitted.
+
+	$name = Input::get('name');
+	$checker = Input::get('checker');
+
+	$data = array(
+		"html" => '
+		<a href="#" class="btn btn-large btn-success disabled"><i class="icon icon-thumbs-up"></i>Form Submitted! Thanks</a>
+		<h4>You have provided following values: </h4>
+		<p>Name : '.$name.'</p>
+		<p>Checker : '.($checker ? 'true' : 'false').'</p>
+
+		'
+	);
+	
+	return Response::json($data);
 });
 
 /*
@@ -107,5 +178,17 @@ Route::filter('csrf', function()
 
 Route::filter('auth', function()
 {
-	if (Auth::guest()) return Redirect::to('login');
+	if (Auth::guest()){
+
+		// this code ensures that even when the request is AJAX, the user will be redirected to the login page. Neat!
+		if (Request::ajax()) {
+			$data = array(
+					"location" => '../login'
+				);
+
+			return Response::json($data);
+		}
+
+		return Redirect::to('login');
+	}
 });
