@@ -1,4 +1,6 @@
 global:
+  env:
+    - LARAVEL_ENV: production
 web1:
   name: laravelajaxexample
   shared_writable_dirs:

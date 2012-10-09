@@ -92,8 +92,8 @@ Route::post('submit', function()
 {
 	// When the form is submitted, we can do some DB queries and let the user know that the form was submitted.
 
-	$name = Input::get('name');
-	$checker = Input::get('checker');
+	$name = e(Input::get('name'));
+	$checker = e(Input::get('checker'));
 
 	$data = array(
 		"html" => '
