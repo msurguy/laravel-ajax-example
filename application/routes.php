@@ -48,6 +48,24 @@ Route::post('replace', function()
 	return Response::json($data);
 });
 
+Route::post('fragments', function()
+{
+	// If you had a database you could easily fetch the content from the database here...
+	$data = array(
+		"fragments" => array(
+			".votebtn" => '<p class="lead">13 Votes</p>'
+		),
+		"append-fragments" => array(
+			"#hero-content" => '<div id="hero-content"><h1>NEW shiny content appended from AJAX fragment.</h1><p>This content was loaded dynamically from a route "fragments" </p></div>'
+		),
+		"inner-fragments" => array(
+			"#hero-content" => '<div id="hero-content"><h1>NEW shiny content from AJAX fragment.</h1><p>This content was loaded dynamically from a route "fragments" </p></div>'
+		)
+	);
+	
+	return Response::json($data);
+});
+
 Route::get('votes', function()
 {
 	// Lets say you have "vote" model, in that case you could be able to do something like 
