@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -127,8 +126,11 @@
 			</p>
        	</div>
        	<div class="span4">
-          <h2>Content Filler</h2>
-            <p>This space has been purposefully filled so that the FORM results on the left are visible without scrolling</p>
+          <h2>Multiple Content Fragments Update</h2>
+            <p>Click the button to update a few fragments on your page at once. 
+              <a href="redirect" class="btn ajax" data-method="post">
+	        <i class="icon icon-refresh"></i> Update fragments &raquo;
+				</a></p> 
           	{{ HTML::image('img/maks.jpg', 'author', array('class' => 'thumbnail')); }}
        	</div>
 
