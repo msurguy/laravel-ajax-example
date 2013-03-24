@@ -1,7 +1,7 @@
 /* ====================================================================
- * bootstrap-ajax.js v0.1.0
+ * bootstrap-ajax.js v0.6.0
  * ====================================================================
- * Copyright (c) 2012, Eldarion, Inc.
+ * Copyright (c) 2013, Eldarion, Inc.
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -54,12 +54,16 @@
     $.ajax({
       url: url,
       type: method,
+      dataType: 'json',
       statusCode: {
         200: function(data) {
           processData(data, $this)
         },
         500: function() {
-          processError($this)
+          $this.trigger('bootstrap-ajax:error', [$this, 500])
+        },
+        404: function() {
+          $this.trigger('bootstrap-ajax:error', [$this, 404])
         }
       }
     })
@@ -69,10 +73,11 @@
     var $this = $(this)
       , url = $this.attr('action')
       , method = $this.attr('method')
-      , data = $this.serialize()
-     
-    $this.find("input[type=submit],button[type=submit]").attr("disabled", "disabled")
-     
+      , data = new FormData($this[0])
+      , button = $this.find('input[type=submit],button[type=submit]')
+    
+    button.attr('disabled', 'disabled')
+    
     spin($this)
     
     e.preventDefault()
@@ -81,13 +86,24 @@
       url: url,
       type: method,
       data: data,
+      dataType: 'json',
+      cache: false,
+      contentType: false,
+      processData: false,
       statusCode: {
         200: function(data) {
+            $this.find('input[type=text],textarea').val('')
             processData(data, $this)
         },
         500: function() {
-            processError($this)
+          $this.trigger('bootstrap-ajax:error', [$this, 500])
+        },
+        404: function() {
+          $this.trigger('bootstrap-ajax:error', [$this, 404])
         }
+      },
+      complete: function() {
+        button.removeAttr('disabled')
       }
     })
   }
@@ -150,9 +166,16 @@
     } else {
       var replace_selector = $el.attr('data-replace')
         , replace_closest_selector = $el.attr('data-replace-closest')
+        , replace_inner_selector = $el.attr('data-replace-inner')
+        , replace_closest_inner_selector = $el.attr('data-replace-closest-inner')
         , append_selector = $el.attr('data-append')
+        , prepend_selector = $el.attr('data-prepend')
         , refresh_selector = $el.attr('data-refresh')
         , refresh_closest_selector = $el.attr('data-refresh-closest')
+        , clear_selector = $el.attr('data-clear')
+        , remove_selector = $el.attr('data-remove')
+        , clear_closest_selector = $el.attr('data-clear-closest')
+        , remove_closest_selector = $el.attr('data-remove-closest')
       
       if (replace_selector) {
         $(replace_selector).replaceWith(data.html)
@@ -160,8 +183,17 @@
       if (replace_closest_selector) {
         $el.closest(replace_closest_selector).replaceWith(data.html)
       }
+      if (replace_inner_selector) {
+        $(replace_inner_selector).html(data.html)
+      }
+      if (replace_closest_inner_selector) {
+        $el.closest(replace_closest_inner_selector).html(data.html)
+      }
       if (append_selector) {
         $(append_selector).append(data.html)
+      }
+      if (prepend_selector) {
+        $(prepend_selector).prepend(data.html)
       }
       if (refresh_selector) {
         $.each($(refresh_selector), function(index, value) {
@@ -177,26 +209,43 @@
           })
         })
       }
+      if (clear_selector) {
+        $(clear_selector).html('')
+      }
+      if (remove_selector) {
+        $(remove_selector).remove()
+      }
+      if (clear_closest_selector) {
+        $el.closest(clear_closest_selector).html('')
+      }
+      if (remove_closest_selector) {
+        $el.closest(remove_closest_selector).remove()
+      }
     }
+    
+    if (data.fragments) {
+      for (var s in data.fragments) {
+        $(s).replaceWith(data.fragments[s])
+      }
+    }
+    if (data['inner-fragments']) {
+      for (var i in data['inner-fragments']) {
+        $(i).html(data['inner-fragments'][i])
+      }
+    }
+    if (data['append-fragments']) {
+      for (var a in data['append-fragments']) {
+        $(a).append(data['append-fragments'][a])
+      }
+    }
+    if (data['prepend-fragments']) {
+      for (var p in data['prepend-fragments']) {
+        $(p).prepend(data['prepend-fragments'][p])
+      }
+    }
+    $el.trigger('bootstrap-ajax:success', [data, $el]);
   }
   
-  function processError($el) {
-    var msg = '<div class="alert alert-error">There was a server error.</div>'
-      , replace_selector = $el.attr('data-replace')
-      , replace_closest_selector = $el.attr('data-replace-closest')
-      , append_selector = $el.attr('data-append')
-    
-    if (replace_selector) {
-      $(replace_selector).replaceWith(msg)
-    }
-    if (replace_closest_selector) {
-      $el.closest(replace_closest_selector).replaceWith(msg)
-    }
-    if (append_selector) {
-      $(append_selector).append(msg)
-    }
-  }
-
   $(function () {
     $('body').on('click', 'a.ajax', Ajax.prototype.click)
     $('body').on('submit', 'form.ajax', Ajax.prototype.submit)

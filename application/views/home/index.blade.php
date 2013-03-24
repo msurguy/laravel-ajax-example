@@ -127,7 +127,7 @@
        	</div>
        	<div class="span4">
           <h2>Content Fragments Update</h2>
-            <p>Click the button to change fragments on your page at once
+            <p>Click the button to change fragments on your page at once (notice the Votes count, hero unit changes)
               <a href="fragments" class="btn ajax" data-method="post">
 	        <i class="icon icon-refresh"></i> Update fragments &raquo;
 	      </a>
