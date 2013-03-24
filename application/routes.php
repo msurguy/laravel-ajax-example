@@ -53,7 +53,7 @@ Route::post('fragments', function()
 	// If you had a database you could easily fetch the content from the database here...
 	$data = array(
 		"fragments" => array(
-			".votecount" => '<p class="lead">14 Votes</p>'
+			".votecount" => '<p class="votecount lead">14 Votes</p>'
 		),
 		"append-fragments" => array(
 			"#hero-content" => '<div id="hero-content"><h1>NEW shiny content appended from AJAX fragment.</h1><p>This content was loaded dynamically from a route "fragments" </p></div>'
@@ -71,7 +71,7 @@ Route::get('votes', function()
 	// Lets say you have "vote" model, in that case you could be able to do something like 
 	// $votecount = Vote::all()->count(); and output that instead of the fixed number I have here
 	$data = array(
-		"html" => '<p class="lead">13 Votes</p>'
+		"html" => '<p class="votecount lead">13 Votes</p>'
 	);
 	
 	return Response::json($data);
