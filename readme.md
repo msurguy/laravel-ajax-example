@@ -1,6 +1,6 @@
 # AJAX examples using [Laravel](http://laravel.com) and [Bootstrap AJAX](https://github.com/eldarion/bootstrap-ajax)
 
-## See live demo at [Pagodabox deployed code](http://laravelajaxexample.pagodabox.com)
+## See live demo at [Pagodabox deployed code](http://laravelajaxexample.gopagoda.com/)
 This is a demo of simplifying AJAX calls withing Laravel application using Bootstrapper Bundle and Bootstrap-ajax extension 
 
 The source code features are :
